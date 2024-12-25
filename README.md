@@ -2,3 +2,7 @@
 
 Темы:
 - CMake
+- Использование библиотек (OpenCV)
+- Тестирование (gtest)
+- Контейнеризация (docker)
+- CI/CD (GitHub Action)
