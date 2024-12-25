@@ -12,23 +12,59 @@ public:
         }
     }
 
-    ImgProc(const ImgProc& oth, int r) {
-        if (r == 'g') {
-            cv::cvtColor(oth.img, img, cv::COLOR_BGR2GRAY);
-        } else {
-            img = oth.img;
+    ImgProc BGR2Gray() {
+        if (img.channels() != 3) {
+            return *this;
         }
+        return ImgProc(ApplyConversion(cv::COLOR_BGR2GRAY));
     }
 
-    int display(const std::string& window_name) {
+    ImgProc Gray2BGR() {
+        if (img.channels() != 1) {
+            return *this;
+        }
+        return ImgProc(ApplyConversion(cv::COLOR_GRAY2BGR));
+    }
+
+    ImgProc BGR2HSV() {
+        if (img.channels() != 3) {
+            return *this;
+        }
+        return ImgProc(ApplyConversion(cv::COLOR_BGR2HLS));
+    }
+
+    ImgProc RotateRight() {
+        return ImgProc(RotateByCode(cv::ROTATE_90_CLOCKWISE));
+    }
+
+    void Display(const std::string& window_name) {
         cv::imshow(window_name, img);
-        return cv::waitKey(0);
+        cv::waitKey();
+        cv::destroyWindow(window_name);
     }
 
-    void save(std::string& path) {
+    void Save(std::string& path) {
+        cv::imwrite(path, img);
+    }
+
+    void Save(std::string&& path) {
         cv::imwrite(path, img);
     }
 
 private:
     cv::Mat img;
+
+    explicit ImgProc(cv::Mat&& img): img(img) {}
+
+    cv::Mat ApplyConversion(cv::ColorConversionCodes code) {
+        cv::Mat other;
+        cv::cvtColor(img, other, code);
+        return other;
+    }
+
+    cv::Mat RotateByCode(cv::RotateFlags code) {
+        cv::Mat other;
+        cv::rotate(img, other, code);
+        return other;
+    }
 };

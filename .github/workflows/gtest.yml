@@ -1,0 +1,31 @@
+name: Building and Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libgtest-dev libopencv-dev cmake build-essential
+
+      - name: Build and run tests
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+          cd test
+          ./testIP
